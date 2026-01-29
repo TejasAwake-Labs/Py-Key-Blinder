@@ -1,5 +1,8 @@
 import numpy as np
 import cv2 as cv
+from multiprocessing.connection import Client
+
+T = Client(('localhost',5000))
 
 cap = cv.VideoCapture(0)
 face = cv.CascadeClassifier("haarcascade_frontalface_default.xml")
@@ -31,6 +34,7 @@ while True:
         a = int((x+(x+w))/2)
         b = int((y+(y+h))/2)
         cv.circle(gray,(a,b),6,(0,255,0),-1)
+        T.send((a,b))
     
     cv.imshow('Live Feed',gray)
     if cv.waitKey(1) == ord('q'):
