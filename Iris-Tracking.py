@@ -1,6 +1,8 @@
 import cv2 as cv
 import random 
 import mediapipe as mp
+from multiprocessing.connection import Client
+T = Client(('localhost',5000))
 
 initialize = mp.solutions.holistic
 holistic_model = initialize.Holistic(
@@ -53,11 +55,26 @@ while True:
 
         pxr = int(((pxro+pxri)/2))
         pyr = int(((pyro+pyri)/2))
-
+        
+        centrex = (800/2)
+        centrey = (600/2)
+        dx = pxr - centrex
+        dy = centrey - pyr
+        
+        angle_per_pixel_x = 62/800
+        angle_per_pixel_y = 50/600
+        
+        pan_offset = dx * angle_per_pixel_x
+        tilt_offset = dy * angle_per_pixel_y
+        
+        pan_angle = 90+pan_offset
+        tilt_angle = 90+tilt_offset
+        
+        T.send((int(pan_angle),int(tilt_angle)))
 
         cv.circle(BGR, (pxr,pyr), 4, (255,0,255),-1)
         cv.circle(BGR, (pxl,pyl), 4, (255, 0, 255),-1)
-        
+    
 
     cv.imshow("feed",BGR)
     if cv.waitKey(1) == ord('q'):
