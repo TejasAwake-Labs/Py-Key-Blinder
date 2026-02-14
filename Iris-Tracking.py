@@ -58,17 +58,19 @@ while True:
         
         centrex = (800/2)
         centrey = (600/2)
+        centre_base = 97
+        centre_tilt = 99
         dx = pxr - centrex
-        dy = centrey - pyr
+        dy = pyr - centrey
         
-        angle_per_pixel_x = 62/800
+        angle_per_pixel_x = 62 / 800
         angle_per_pixel_y = 50/600
         
         pan_offset = dx * angle_per_pixel_x
         tilt_offset = dy * angle_per_pixel_y
-        
-        pan_angle = 90+pan_offset
-        tilt_angle = 90+tilt_offset
+
+        pan_angle = centre_base + pan_offset
+        tilt_angle = centre_tilt - tilt_offset
         
         T.send((int(pan_angle),int(tilt_angle)))
 
