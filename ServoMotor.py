@@ -22,27 +22,37 @@ def SetAngleBase(angle):
     GPIO.output(3 , True)
     pwm.ChangeDutyCycle(duty)
     sleep(0.5)
+    pwm.ChangeDutyCycle(0)
 
 def SetAngleAim(angle):
-    duty = (angle/18)+2
+    duty = 2.5 + (angle / 18)
     GPIO.output(5 , True)
     pwma.ChangeDutyCycle(duty)
     sleep(0.5)
+    pwma.ChangeDutyCycle(0)
+ 
+try:
+    while True:
+        x , y = R.recv()
+        base = x
+        aim = y
+        print(x,y)
+        if x > 180:
+            print("this is the reason your servo burnt")
+        
+        else:
+            SetAngleBase(base)
+            SetAngleAim(aim)
+except KeyboardInterrupt:
+    print("Stopping...")
+    SetAngleBase(97)
+    SetAngleAim(99)
+finally:
+    pwm.stop()
+    pwma.stop()
+    GPIO.cleanup()
     
-while True:
-    x , y = R.recv()
-    base = x
-    aim = y
-    print(x,y)
-    GPIO.output(7, GPIO.HIGH)
-    sleep(2)
-    SetAngleBase(base)
-    sleep(2)
-    SetAngleAim(aim)
-    sleep(2)
+    
 
 
-pwm.stop()
-pwma.stop()
-GPIO.cleanup()
     
